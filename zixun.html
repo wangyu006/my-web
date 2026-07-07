@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1对1 · 全科+艺术家教</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f2ed;
+            color: #2c2a2a;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 42px 38px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eeeae6;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #f0ebe6;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #1f1b18;
+        }
+        .header h1 span {
+            color: #b8a088;
+        }
+        .header .sub {
+            font-size: 15px;
+            color: #9a8e84;
+            margin-top: 6px;
+            letter-spacing: 6px;
+        }
+        .online-badge {
+            display: inline-block;
+            background: #1f1b18;
+            color: #ffffff;
+            font-size: 12px;
+            padding: 4px 20px;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f1b18;
+            margin: 26px 0 14px 0;
+            padding-left: 4px;
+            letter-spacing: 2px;
+        }
+        .section-title .tag {
+            font-size: 12px;
+            font-weight: 400;
+            color: #9a8e84;
+            letter-spacing: 1px;
+            margin-left: 10px;
+        }
+        .card {
+            background: #faf8f6;
+            border-radius: 18px;
+            padding: 20px 24px;
+            margin-bottom: 14px;
+            border-left: 4px solid #d4c8bc;
+            transition: 0.2s;
+        }
+        .card:hover {
+            background: #f7f3ef;
+            border-left-color: #b8a088;
+        }
+        .card .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .card .meta .subject {
+            font-weight: 600;
+            font-size: 17px;
+            color: #1f1b18;
+        }
+        .card .meta .level {
+            background: #e8e2dc;
+            color: #5f554b;
+            font-size: 12px;
+            padding: 1px 14px;
+            border-radius: 30px;
+        }
+        .card .teacher {
+            color: #7a6b60;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .card .teacher strong {
+            color: #3d3530;
+            font-weight: 600;
+        }
+        .card .desc {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #3d3732;
+            margin-top: 4px;
+        }
+        .card .desc em {
+            font-style: normal;
+            background: #f0ebe6;
+            padding: 0 6px;
+            border-radius: 4px;
+            color: #6b5f55;
+        }
+        .divider {
+            text-align: center;
+            color: #d4c8bc;
+            margin: 18px 0 10px;
+            font-size: 13px;
+            letter-spacing: 8px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+        .info-item {
+            background: #faf8f6;
+            border-radius: 14px;
+            padding: 16px 12px;
+            text-align: center;
+            border: 1px solid #eeeae6;
+        }
+        .info-item .num {
+            font-size: 26px;
+            font-weight: 300;
+            color: #1f1b18;
+        }
+        .info-item .label {
+            font-size: 13px;
+            color: #9a8e84;
+            margin-top: 2px;
+        }
+        .footer-text {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 13px;
+            color: #bfb4aa;
+            letter-spacing: 2px;
+            border-top: 1px solid #f0ebe6;
+            padding-top: 22px;
+        }
+
+        /* ===== 统一方格：二维码 + 合作入口 ===== */
+        .unified-card {
+            background: #faf8f6;
+            border-radius: 18px;
+            padding: 24px 26px;
+            margin: 10px 0 10px 0;
+            border: 1px solid #eeeae6;
+        }
+
+        /* ===== 二维码区域 ===== */
+        .qrcode-section {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed #e0d8d0;
+            margin-bottom: 16px;
+        }
+        .qrcode-item {
+            text-align: center;
+            flex: 0 1 auto;
+        }
+        .qrcode-item .qr-placeholder {
+            width: 120px;
+            height: 120px;
+            background: #e8e2dc;
+            border-radius: 14px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #9a8e84;
+            border: 2px dashed #c9b9ad;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .qrcode-item .qr-placeholder .icon {
+            font-size: 32px;
+        }
+        .qrcode-item .label {
+            font-size: 15px;
+            color: #3d3530;
+            font-weight: 600;
+        }
+        .qrcode-item .sub-label {
+            font-size: 13px;
+            color: #9a8e84;
+        }
+        .qrcode-item .phone {
+            margin-top: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f1b18;
+            letter-spacing: 1px;
+        }
+        .qrcode-item .phone small {
+            font-size: 12px;
+            font-weight: 400;
+            color: #9a8e84;
+        }
+        .qrcode-item .phone a {
+            color: #1f1b18;
+            text-decoration: none;
+        }
+        .qrcode-item .phone a:hover {
+            color: #3d3530;
+        }
+
+        /* ===== 合作入口 ===== */
+        .coop-section h3 {
+            font-size: 16px;
+            color: #1f1b18;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .coop-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .coop-btns .coop-btn {
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #d4c8bc;
+            border-radius: 30px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: #3d3530;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .coop-btns .coop-btn:hover {
+            background: #1f1b18;
+            color: #ffffff;
+            border-color: #1f1b18;
+        }
+        .coop-btns .coop-btn.primary {
+            background: #1f1b18;
+            color: #ffffff;
+            border-color: #1f1b18;
+        }
+        .coop-btns .coop-btn.primary:hover {
+            background: #3d3530;
+        }
+        .coop-email {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #7a6b60;
+            text-align: center;
+        }
+        .coop-email strong {
+            color: #1f1b18;
+        }
+
+        /* ===== 底部导航 ===== */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #f0ebe6;
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: #bfb4aa;
+            text-decoration: none;
+            padding: 4px 12px;
+        }
+        .bottom-nav a:hover {
+            color: #7a6b60;
+        }
+        .bottom-nav a.active {
+            color: #1f1b18;
+            font-weight: 500;
+        }
+        .bottom-nav a .icon {
+            font-size: 22px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 24px 16px; }
+            .info-grid { grid-template-columns: 1fr 1fr; }
+            .card { padding: 16px 16px; }
+            .header h1 { font-size: 24px; }
+            .coop-btns .coop-btn { font-size: 12px; padding: 8px 8px; white-space: normal; }
+            .qrcode-item .qr-placeholder { width: 90px; height: 90px; }
+            .qrcode-item .phone { font-size: 13px; }
+            .unified-card { padding: 18px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== 头部 ===== -->
+        <div class="header">
+            <h1>1对1 <span>·</span> 家教</h1>
+            <div class="sub">全科辅导 · 艺术培养 · 因材施教</div>
+            <div class="online-badge">💻 纯线上 · 视频授课</div>
+        </div>
+
+        <!-- ===== 学科类 ===== -->
+        <div class="section-title">📖 学科辅导 <span class="tag">语 / 数 / 英 / 理 / 文综</span></div>
+
+        <div class="card">
+            <div class="meta">
+                <span class="subject">语文</span>
+                <span class="level">小学 / 初中 / 高中</span>
+            </div>
+            <div class="teacher"><strong>张老师</strong> · 汉语言文学专业 · 6年教龄</div>
+            <div class="desc">阅读理解、文言文、作文写作、基础知识巩固。<br><em>注重阅读习惯培养，提升表达与思辨能力。</em></div>
+        </div>
+
+        <div class="card">
+            <div class="meta">
+                <span class="subject">数学</span>
+                <span class="level">小学 / 初中 / 高中</span>
+            </div>
+            <div class="teacher"><strong>李老师</strong> · 数学与应用数学 · 8年教龄</div>
+            <div class="desc">基础计算、应用题、几何、函数、奥数思维拓展。<br><em>分层教学，从夯实基础到拔高提优。</em></div>
+        </div>
+
+        <div class="card">
+            <div class="meta">
+                <span class="subject">英语</span>
+                <span class="level">小学 / 初中 / 高中</span>
+            </div>
+            <div class="teacher"><strong>王老师</strong> · 英语专业八级 · 5年教龄</div>
+            <div class="desc">单词记忆、语法梳理、听力口语、阅读写作。<br><em>情景互动式教学，告别哑巴英语。</em></div>
+        </div>
+
+        <div class="card">
+            <div class="meta">
+                <span class="subject">物理 / 化学</span>
+                <span class="level">初中 / 高中</span>
+            </div>
+            <div class="teacher"><strong>陈老师</strong> · 理工科硕士 · 7年教龄</div>
+            <div class="desc">概念理解、实验分析、解题技巧、中考高考冲刺。<br><em>用生活实例讲透原理，举一反三。</em></div>
+        </div>
+
+        <div class="card">
+            <div class="meta">
+                <span class="subject">历史 / 政治 / 地理</span>
+                <span class="level">初中 / 高中</span>
+            </div>
+            <div class="teacher"><strong>刘老师</strong> · 文科综合 · 5年教龄</div>
+            <div class="desc">知识点串讲、答题模板、时政热点、材料分析。<br><em>构建知识框架，告别死记硬背。</em></div>
+        </div>
+
+        <div class="divider">· · · · ·</div>
+
+        <!-- ===== 艺术类 ===== -->
+        <div class="section-title">🎨 艺术培养 <span class="tag">音乐 / 美术</span></div>
+
+        <div class="card" style="border-left-color: #c9b09b;">
+            <div class="meta">
+                <span class="subject">🎵 音乐</span>
+                <span class="level">启蒙 / 考级 / 艺考</span>
+            </div>
+            <div class="teacher"><strong>林老师</strong> · 音乐学院毕业 · 8年教学经验</div>
+            <div class="desc">钢琴、古筝、声乐、乐理、视唱练耳。<br><em>可辅导考级（上音/央音/英皇）及音乐类艺考。</em></div>
+        </div>
+
+        <div class="card" style="border-left-color: #c9b09b;">
+            <div class="meta">
+                <span class="subject">🎨 美术</span>
+                <span class="level">启蒙 / 考级 / 艺考</span>
+            </div>
+            <div class="teacher"><strong>赵老师</strong> · 美术院校毕业 · 7年教学经验</div>
+            <div class="desc">素描、色彩、速写、儿童创意画、国画、水彩。<br><em>可辅导考级及美术类艺考，培养审美与创造力。</em></div>
+        </div>
+
+        <div class="card" style="border-left-color: #c9b09b;">
+            <div class="meta">
+                <span class="subject">🎭 书法 / 硬笔</span>
+                <span class="level">小学 / 初中 / 成人</span>
+            </div>
+            <div class="teacher"><strong>周老师</strong> · 书法协会会员 · 6年教龄</div>
+            <div class="desc">软笔书法、硬笔字帖、卷面书写提升。<br><em>纠正握笔姿势，练就一手好字，受益终身。</em></div>
+        </div>
+
+        <div class="divider">· · · · ·</div>
+
+        <!-- ===== 辅导说明 ===== -->
+        <div style="background:#faf8f6; border-radius:18px; padding:22px 26px; margin-top:4px;">
+            <div style="font-weight:500; font-size:16px; color:#1f1b18; margin-bottom:10px;">📋 辅导说明</div>
+            <ul style="list-style:none; font-size:14px; line-height:2.2; color:#4d4540;">
+                <li>✓ 线上授课，支持电脑 / 平板 / 手机</li>
+                <li>✓ 每次课 <strong>60-120</strong>分钟，根据年龄段分配</li>
+                <li>✓ 试听 <strong>1次</strong>，满意后正式排课</li>
+                <li>✓ 根据学生情况定制教学计划，定期反馈学习进度</li>
+                <li>✓ 学科类 + 艺术类可组合安排，灵活搭配</li>
+                <li>✓ 支持录播回放，课后随时复习</li>
+            </ul>
+        </div>
+
+        <!-- ===== 数据统计 ===== -->
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="num">6<span style="font-size:16px;color:#bfb4aa;">万+</span></div>
+                <div class="label">累计辅导学生</div>
+            </div>
+            <div class="info-item">
+                <div class="num">96<span style="font-size:16px;color:#bfb4aa;">%</span></div>
+                <div class="label">家长满意度</div>
+            </div>
+            <div class="info-item">
+                <div class="num">8</div>
+                <div class="label">覆盖科目</div>
+            </div>
+            <div class="info-item">
+                <div class="num">1对1</div>
+                <div class="label">专属定制</div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 统一方格：二维码（上）+ 合作入口（下） -->
+        <!-- ============================================================ -->
+        <div class="unified-card">
+
+            <!-- 二维码（上半部分） -->
+            <div class="qrcode-section">
+                <div class="qrcode-item">
+                    <div class="qr-placeholder">
+                        <div class="icon">📱</div>
+                        <div>扫码加微信</div>
+                        <div style="font-size:9px; color:#bfb4aa;">（请替换为真实二维码）</div>
+                    </div>
+                    <div class="label">个人号 · 咨询</div>
+                    <div class="sub-label">1对1答疑 / 试听预约</div>
+                    <div class="phone">
+                        <a href="tel:4008889999">📞 400-888-9999</a>
+                        <small>咨询热线</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 合作入口（下半部分） -->
+            <div class="coop-section">
+                <h3>🤝 合作入口</h3>
+                <div class="coop-btns">
+                    <a href="cooperate-org.html" class="coop-btn primary">🏢 机构合作</a>
+                    <a href="cooperate-teacher.html" class="coop-btn">👨‍🏫 师资入驻</a>
+                    <a href="cooperate-business.html" class="coop-btn">💼 商务洽谈</a>
+                    <a href="cooperate-agent.html" class="coop-btn">🤝 代理加盟</a>
+                </div>
+                <div class="coop-email">
+                    📧 合作邮箱：<strong>sisi@yuzhihejin.cn</strong> &nbsp;·&nbsp; 工作日 9:00-18:00
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== 底部导航 ===== -->
+        <div class="bottom-nav">
+            <a href="index.html"><span class="icon">🏠</span>首页</a>
+            <a href="zixun.html" class="active"><span class="icon">💬</span>1V1咨询</a>
+            <a href="index.html"><span class="icon">⚙️</span>我的</a>
+        </div>
+
+        <div class="footer-text">—— 学科与艺术并重 · 用心陪伴成长 ——</div>
+
+    </div>
+</body>
+</html>
