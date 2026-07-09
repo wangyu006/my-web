@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打卡 · 社交学习圈</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f4f1ee;
+            color: #1f1b18;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 16px 40px;
+        }
+        .container {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 28px 22px 32px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eeeae6;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #1f1b18;
+        }
+        .header h1 span { color: #b8a088; }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .header-actions button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #7a6b60;
+            transition: 0.2s;
+            padding: 4px;
+        }
+        .header-actions button:hover {
+            color: #1f1b18;
+            transform: scale(1.05);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #faf8f6;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+            border: 1px solid #f0ebe6;
+        }
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #d4c8bc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #7a6b60;
+            flex-shrink: 0;
+        }
+        .user-info {
+            flex: 1;
+        }
+        .user-info .name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #1f1b18;
+        }
+        .user-info .bio {
+            font-size: 13px;
+            color: #9a8e84;
+            margin-top: 2px;
+        }
+        .user-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #7a6b60;
+        }
+        .user-stats strong {
+            color: #1f1b18;
+            font-size: 15px;
+        }
+
+        .today-card {
+            background: #1f1b18;
+            border-radius: 20px;
+            padding: 20px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffffff;
+        }
+        .today-card .left .label {
+            font-size: 13px;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+        .today-card .left .date {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .today-card .left .date small {
+            font-weight: 400;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+        .checkin-btn {
+            background: #ffffff;
+            color: #1f1b18;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 1px;
+        }
+        .checkin-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+        }
+        .checkin-btn.done {
+            background: #4a7c59;
+            color: #ffffff;
+            cursor: default;
+        }
+        .checkin-btn.done:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .wecom-entry {
+            background: #f5efe9;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e0d8d0;
+            transition: 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .wecom-entry:hover {
+            background: #f0ebe6;
+            border-color: #b8a088;
+        }
+        .wecom-entry .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wecom-entry .left .icon { font-size: 28px; }
+        .wecom-entry .left .text .title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f1b18;
+        }
+        .wecom-entry .left .text .desc {
+            font-size: 12px;
+            color: #7a6b60;
+        }
+        .wecom-entry .right {
+            background: #1f1b18;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .platform-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .platform-item {
+            background: #faf8f6;
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #eeeae6;
+            transition: 0.2s;
+        }
+        .platform-item:hover {
+            background: #f0ebe6;
+            transform: translateY(-2px);
+        }
+        .platform-item .icon { font-size: 22px; }
+        .platform-item .name {
+            font-size: 11px;
+            color: #9a8e84;
+            margin-top: 2px;
+        }
+        .platform-item .count {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f1b18;
+        }
+        .platform-item .count .unit {
+            font-size: 12px;
+            font-weight: 400;
+            color: #bfb4aa;
+        }
+        .platform-item .ai-badge {
+            display: inline-block;
+            font-size: 9px;
+            background: #1f1b18;
+            color: #ffffff;
+            padding: 1px 10px;
+            border-radius: 30px;
+            margin-top: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 日历左右滑动 */
+        .calendar-section {
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .calendar-header .title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f1b18;
+        }
+        .calendar-header .month-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .calendar-header .month-controls button {
+            background: none;
+            border: 1px solid #e0d8d0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1f1b18;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .calendar-header .month-controls button:hover {
+            background: #f0ebe6;
+            border-color: #b8a088;
+        }
+        .calendar-header .month-controls .month-label {
+            font-size: 15px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            color: #1f1b18;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .calendar-grid .day {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #3d3530;
+            background: #faf8f6;
+            transition: 0.2s;
+            cursor: default;
+        }
+        .calendar-grid .day.checked {
+            background: #1f1b18;
+            color: #ffffff;
+            position: relative;
+        }
+        .calendar-grid .day.checked::after {
+            content: "✓";
+            font-size: 10px;
+            position: absolute;
+            top: 2px;
+            right: 5px;
+            color: #b8a088;
+        }
+        .calendar-grid .day.today {
+            border: 2px solid #1f1b18;
+            font-weight: 600;
+        }
+        .calendar-grid .day.blank { background: transparent; }
+
+        .feed-scroll {
+            max-height: 520px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            padding-right: 4px;
+        }
+        .feed-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .feed-scroll::-webkit-scrollbar-track {
+            background: #f0ebe6;
+            border-radius: 4px;
+        }
+        .feed-scroll::-webkit-scrollbar-thumb {
+            background: #b8a088;
+            border-radius: 4px;
+        }
+
+        .feed-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f1b18;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feed-title .badge {
+            background: #f0ebe6;
+            color: #7a6b60;
+            font-size: 11px;
+            padding: 1px 12px;
+            border-radius: 30px;
+            font-weight: 400;
+        }
+
+        .feed-item {
+            display: flex;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0ebe6;
+            position: relative;
+        }
+        .feed-item:last-child { border-bottom: none; }
+        .feed-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e8e2dc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #7a6b60;
+            flex-shrink: 0;
+        }
+        .feed-content {
+            flex: 1;
+        }
+        .feed-content .feed-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1f1b18;
+        }
+        .feed-content .feed-name span {
+            font-weight: 400;
+            color: #9a8e84;
+            font-size: 13px;
+            margin-left: 6px;
+        }
+        .feed-content .feed-text {
+            font-size: 14px;
+            color: #3d3732;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .feed-content .feed-text em {
+            font-style: normal;
+            background: #f0ebe6;
+            padding: 0 6px;
+            border-radius: 4px;
+            color: #6b5f55;
+        }
+
+        /* 评论样式：名称：评语 */
+        .feed-comment {
+            background: #f5f0eb;
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-left: 3px solid #b8a088;
+            font-size: 13px;
+            color: #4d4540;
+            line-height: 1.8;
+        }
+        .ai-comment-item {
+            display: block;
+            margin-top: 2px;
+        }
+        .ai-comment-item:first-child { margin-top: 0; }
+        .ai-comment-item .ai-name {
+            font-weight: 600;
+            color: #1f1b18;
+        }
+        .ai-comment-item .ai-text {
+            color: #3d3732;
+        }
+
+        .feed-meta {
+            font-size: 12px;
+            color: #bfb4aa;
+            margin-top: 6px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .like-btn {
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+        }
+        .like-btn:hover { color: #1f1b18; }
+        .like-btn.liked { color: #c0392b; }
+
+        .float-heart {
+            position: fixed;
+            pointer-events: none;
+            color: #c0392b;
+            font-size: 24px;
+            z-index: 999;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+        }
+
+        .platform-tag {
+            font-size: 10px;
+            background: #f0ebe6;
+            padding: 1px 10px;
+            border-radius: 30px;
+            color: #7a6b60;
+            margin-left: auto;
+        }
+
+        .publish-section {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            background: #faf8f6;
+            border-radius: 30px;
+            padding: 6px 6px 6px 18px;
+            border: 1px solid #eeeae6;
+        }
+        .publish-section input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #1f1b18;
+            outline: none;
+            font-family: inherit;
+        }
+        .publish-section input::placeholder { color: #bfb4aa; }
+        .publish-section button {
+            background: #1f1b18;
+            color: #ffffff;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .publish-section button:hover { background: #3d3530; }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #f0ebe6;
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: #bfb4aa;
+            text-decoration: none;
+            padding: 4px 12px;
+        }
+        .bottom-nav a:hover { color: #7a6b60; }
+        .bottom-nav a.active {
+            color: #1f1b18;
+            font-weight: 500;
+        }
+        .bottom-nav a .icon { font-size: 22px; }
+
+        @media (max-width: 420px) {
+            .container { padding: 20px 14px 24px; }
+            .today-card { flex-direction: column; gap: 14px; text-align: center; }
+            .user-section { flex-wrap: wrap; }
+            .user-stats { width: 100%; justify-content: space-around; }
+            .calendar-grid .day { font-size: 12px; }
+            .wecom-entry { flex-direction: column; gap: 12px; text-align: center; }
+            .wecom-entry .left { flex-direction: column; }
+            .platform-stats { grid-template-columns: 1fr 1fr 1fr; }
+            .feed-scroll { max-height: 320px; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>📌 打卡<span>圈</span></h1>
+        <div class="header-actions">
+            <button title="通知">🔔</button>
+            <button title="更多">⋯</button>
+        </div>
+    </div>
+
+    <div class="user-section">
+        <div class="avatar">👤</div>
+        <div class="user-info">
+            <div class="name">小锦同学</div>
+            <div class="bio">📚 坚持学习 · 每日进步</div>
+        </div>
+        <div class="user-stats">
+            <div><strong>28</strong> 天</div>
+            <div><strong>12</strong> 赞</div>
+        </div>
+    </div>
+
+    <div class="today-card">
+        <div class="left">
+            <div class="label">📅 今日打卡</div>
+            <div class="date" id="todayDate">加载中...</div>
+        </div>
+        <button class="checkin-btn" id="checkinBtn">✅ 打卡</button>
+    </div>
+
+    <a href="https://work.weixin.qq.com/ca/cawcdeedfb513108d5" class="wecom-entry" target="_blank">
+        <div class="left">
+            <span class="icon">💬</span>
+            <div class="text">
+                <div class="title">📱 咨询 · 入驻 · 合作</div>
+                <div class="desc">点击联系客服，老师入驻 / 家长找家教 / 机构合作</div>
+            </div>
+        </div>
+        <div class="right">立即咨询 →</div>
+    </a>
+
+    <div class="platform-stats">
+        <div class="platform-item"><div class="icon">🎵</div><div class="count" id="platDouyin">8.7<span class="unit"> 万</span></div><div class="name">抖音</div><div class="ai-badge">🤖 AI 运营</div></div>
+        <div class="platform-item"><div class="icon">📕</div><div class="count" id="platXiaohongshu">5.4<span class="unit"> 万</span></div><div class="name">小红书</div><div class="ai-badge">🤖 AI 运营</div></div>
+        <div class="platform-item"><div class="icon">💬</div><div class="count" id="platWechat">6.3<span class="unit"> 万</span></div><div class="name">微信</div><div class="ai-badge">🤖 AI 运营</div></div>
+        <div class="platform-item"><div class="icon">📺</div><div class="count" id="platBilibili">4.1<span class="unit"> 万</span></div><div class="name">B站</div><div class="ai-badge">🤖 AI 运营</div></div>
+        <div class="platform-item"><div class="icon">🛒</div><div class="count" id="platTaobao">3.2<span class="unit"> 万</span></div><div class="name">淘宝</div><div class="ai-badge">🤖 AI 运营</div></div>
+        <div class="platform-item"><div class="icon">🐬</div><div class="count" id="platDeepSeek">2.8<span class="unit"> 万</span></div><div class="name">DeepSeek</div><div class="ai-badge">🤖 AI 运营</div></div>
+    </div>
+
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <span class="title">📆 打卡记录</span>
+            <div class="month-controls">
+                <button id="prevMonth">‹</button>
+                <span class="month-label" id="calendarMonthLabel">7月</span>
+                <button id="nextMonth">›</button>
+            </div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="feed-title">📰 好友动态 <span class="badge" id="feedBadge">12 条新</span></div>
+    <div class="feed-scroll" id="feedScroll"></div>
+
+    <div class="publish-section">
+        <input type="text" id="postInput" placeholder="分享你的打卡动态..." maxlength="80">
+        <button id="publishBtn">发布</button>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active"><span class="icon">🏠</span>首页</a>
+        <a href="zixun.html" class="nav-item"><span class="icon">💬</span>1V1咨询</a>
+        <a href="index.html" class="nav-item"><span class="icon">⚙️</span>我的</a>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // AI 评论池（只保留名称，不带图标）
+    // ============================================================
+    const aiCommenters = [
+        '🦞 龙虾AI',
+        '🐬 DeepSeek AI',
+        '💬 千问AI',
+        '🫘 豆包AI',
+        '🛒 京东AI',
+        '🍜 美团AI',
+        '🎵 抖音AI',
+        '🎬 短剧AI',
+        '🎨 动漫AI'
+    ];
+
+    const aiCommentTemplates = [
+        '内容很扎实，继续保持！',
+        '学习节奏越来越好了！',
+        '这个进步速度很惊人！',
+        '每天都能看到你的成长！',
+        '这个知识点掌握得很到位！',
+        '学习态度满分！',
+        '持续精进，未来可期！',
+        '这个解题思路很清晰！',
+        '语感提升很快，继续加油！',
+        '逻辑能力越来越强了！',
+        '创意十足，非常有潜力！',
+        '这个角度很新颖，值得学习！',
+        '执行力满分，继续加油！'
+    ];
+
+    const feedData = [
+        { avatar: '📖', name: '子玉', content: '今日完成 <em>数学</em> 专题训练 + <em>英语</em> 听力打卡 🎯', tags: '📱 微信 · 抖音 同步' },
+        { avatar: '🎨', name: '锦瑟', content: '素描练习第 12 天，今天画了 <em>静物组合</em> 🖌️', tags: '📕 小红书 · B站 同步' },
+        { avatar: '🎵', name: '林老师', content: '练琴打卡 <em>🎹 肖邦 · 夜曲</em> 第 3 天，终于顺下来了！', tags: '🎵 抖音 · 淘宝 同步' },
+        { avatar: '✍️', name: '小周', content: '硬笔书法打卡 <em>《兰亭序》</em> 节选，越写越有感觉 ✨', tags: '📱 微信 · 小红书 同步' },
+        { avatar: '🏃', name: '阿杰', content: '晨跑打卡 <em>5 公里</em>，配速 5 分 30 秒，坚持就是胜利 💪', tags: '📱 微信 · 抖音 同步' },
+        { avatar: '📚', name: '小雅', content: '读完 <em>《百年孤独》</em> 第 3 章，马尔克斯的文字太迷人了 📖', tags: '📕 小红书 · B站 同步' },
+        { avatar: '🎸', name: '大飞', content: '吉他练习 <em>C 大调音阶</em>，换把位越来越顺畅了 🎸', tags: '🎵 抖音 · 淘宝 同步' },
+        { avatar: '🧘', name: '静静', content: '瑜伽打卡 <em>拜日式</em> 第 7 天，身体柔韧性明显提升 🧘', tags: '📱 微信 · 小红书 同步' }
+    ];
+
+    // 生成AI评论（名称：评语）
+    function generateAIComment() {
+        const name = aiCommenters[Math.floor(Math.random() * aiCommenters.length)];
+        const text = aiCommentTemplates[Math.floor(Math.random() * aiCommentTemplates.length)];
+        return { name, text };
+    }
+
+    // 渲染动态
+    function renderFeed() {
+        const container = document.getElementById('feedScroll');
+        const shuffled = [...feedData].sort(() => Math.random() - 0.5);
+        const selected = shuffled.slice(0, 4);
+
+        container.innerHTML = '';
+        selected.forEach((item) => {
+            const timeOptions = ['2 小时前', '3 小时前', '5 小时前', '6 小时前', '1 小时前', '4 小时前'];
+            const randomTime = timeOptions[Math.floor(Math.random() * timeOptions.length)];
+            const likeCount = Math.floor(Math.random() * 60) + 20;
+            const commentCount = Math.floor(Math.random() * 15) + 5;
+
+            const comment1 = generateAIComment();
+            const comment2 = generateAIComment();
+
+            const div = document.createElement('div');
+            div.className = 'feed-item';
+            div.innerHTML = `
+                <div class="feed-avatar">${item.avatar}</div>
+                <div class="feed-content">
+                    <div class="feed-name">${item.name} <span>· ${randomTime}</span></div>
+                    <div class="feed-text">${item.content}</div>
+                    <div class="feed-comment">
+                        <div class="ai-comment-item"><span class="ai-name">${comment1.name}</span>：<span class="ai-text">${comment1.text}</span></div>
+                        <div class="ai-comment-item"><span class="ai-name">${comment2.name}</span>：<span class="ai-text">${comment2.text}</span></div>
+                    </div>
+                    <div class="feed-meta">
+                        <span class="like-btn" onclick="handleLike(this)">❤️ <span class="like-count">${likeCount}</span></span>
+                        <span class="like-btn" onclick="alert('💬 评论区开发中')">💬 ${commentCount}</span>
+                        <span class="platform-tag">${item.tags}</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('feedBadge').textContent = `${Math.floor(Math.random() * 18) + 12} 条新`;
+    }
+
+    // ============================================================
+    // 日历（左右滑动切换月份）
+    // ============================================================
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    function renderCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        const monthLabel = document.getElementById('calendarMonthLabel');
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const today = new Date();
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth();
+        const todayYear = today.getFullYear();
+
+        const checkedDays = [1, 2, 3, 5, 6, 7, 9, 10, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 30, 31];
+        if (currentMonth === todayMonth && currentYear === todayYear) {
+            if (!checkedDays.includes(todayDate)) checkedDays.push(todayDate);
+        }
+
+        let checkedCount = 0;
+        grid.innerHTML = '';
+        ['日','一','二','三','四','五','六'].forEach(w => {
+            const el = document.createElement('div');
+            el.className = 'day';
+            el.style.cssText = 'font-size:11px; color:#bfb4aa; font-weight:500;';
+            el.textContent = w;
+            grid.appendChild(el);
+        });
+
+        for (let i = 0; i < firstDay; i++) {
+            const el = document.createElement('div');
+            el.className = 'day blank';
+            grid.appendChild(el);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const el = document.createElement('div');
+            el.className = 'day';
+            if (checkedDays.includes(d)) { el.classList.add('checked'); checkedCount++; }
+            if (d === todayDate && currentMonth === todayMonth && currentYear === todayYear) {
+                el.classList.add('today');
+            }
+            el.textContent = d;
+            grid.appendChild(el);
+        }
+
+        monthLabel.textContent = `${currentMonth + 1}月 (${checkedCount}天)`;
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', function() {
+        if (currentMonth === 0) { currentMonth = 11; currentYear--; }
+        else { currentMonth--; }
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function() {
+        if (currentMonth === 11) { currentMonth = 0; currentYear++; }
+        else { currentMonth++; }
+        renderCalendar();
+    });
+
+    // ============================================================
+    // 日期更新
+    // ============================================================
+    function updateDate() {
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+        const weekDay = weekDays[now.getDay()];
+        document.getElementById('todayDate').innerHTML = `${month}月${day}日 <small>${weekDay}</small>`;
+    }
+
+    // ============================================================
+    // 打卡按钮
+    // ============================================================
+    const checkinBtn = document.getElementById('checkinBtn');
+    let isCheckedIn = false;
+    checkinBtn.addEventListener('click', function() {
+        if (isCheckedIn) {
+            alert('✅ 今日已打卡！明天继续加油 💪');
+            return;
+        }
+        this.textContent = '✅ 已打卡';
+        this.classList.add('done');
+        isCheckedIn = true;
+        alert('🎉 打卡成功！继续加油！');
+        renderCalendar();
+    });
+
+    // ============================================================
+    // 点赞
+    // ============================================================
+    function handleLike(el) {
+        const countSpan = el.querySelector('.like-count');
+        let count = parseInt(countSpan.textContent, 10);
+        if (el.classList.contains('liked')) {
+            count--;
+            el.classList.remove('liked');
+        } else {
+            count++;
+            el.classList.add('liked');
+            const heart = document.createElement('span');
+            heart.textContent = '❤️';
+            heart.className = 'float-heart';
+            const rect = el.getBoundingClientRect();
+            heart.style.left = (rect.left + rect.width/2 - 12) + 'px';
+            heart.style.top = (rect.top - 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        }
+        countSpan.textContent = count;
+    }
+
+    // ============================================================
+    // 平台数据
+    // ============================================================
+    const platData = {
+        douyin: { el: 'platDouyin', count: 8.7 },
+        xiaohongshu: { el: 'platXiaohongshu', count: 5.4 },
+        wechat: { el: 'platWechat', count: 6.3 },
+        bilibili: { el: 'platBilibili', count: 4.1 },
+        taobao: { el: 'platTaobao', count: 3.2 },
+        deepseek: { el: 'platDeepSeek', count: 2.8 }
+    };
+
+    function updatePlatformUI() {
+        for (const key in platData) {
+            const item = platData[key];
+            document.getElementById(item.el).innerHTML = item.count.toFixed(1) + '<span class="unit"> 万</span>';
+        }
+    }
+
+    function randomIncrease() {
+        for (const key in platData) {
+            const increment = Math.round((Math.random() * 0.4 + 0.1) * 10) / 10;
+            platData[key].count += increment;
+        }
+        updatePlatformUI();
+    }
+
+    updatePlatformUI();
+    setInterval(randomIncrease, 5000);
+
+    // ============================================================
+    // 动态刷新 & 发布
+    // ============================================================
+    renderFeed();
+    setInterval(renderFeed, 8000);
+
+    const publishBtn = document.getElementById('publishBtn');
+    const postInput = document.getElementById('postInput');
+    publishBtn.addEventListener('click', function() {
+        const text = postInput.value.trim();
+        if (!text) { alert('📝 请输入打卡内容～'); return; }
+        if (text.length > 80) { alert('📝 内容不能超过80个字哦'); return; }
+
+        const avatarEmojis = ['✨', '🌟', '🔥', '💪', '🎯', '📌'];
+        feedData.push({
+            avatar: avatarEmojis[Math.floor(Math.random() * avatarEmojis.length)],
+            name: '小锦同学',
+            content: text,
+            tags: '🌐 全平台 AI 同步中'
+        });
+        renderFeed();
+        postInput.value = '';
+        alert('✅ 打卡动态已发布！');
+    });
+    postInput.addEventListener('keydown', e => { if (e.key === 'Enter') publishBtn.click(); });
+
+    // ============================================================
+    // 初始化
+    // ============================================================
+    updateDate();
+    renderCalendar();
+</script>
+</body>
+</html>
