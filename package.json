@@ -1,0 +1,14 @@
+{
+    "name": "yuzhihejin-proxy",
+    "version": "1.0.0",
+    "description": "玉旨和锦 · 著作权登记代理服务",
+    "main": "proxy-server.js",
+    "scripts": {
+        "start": "node proxy-server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "http-proxy-middleware": "^2.0.6",
+        "cors": "^2.8.5"
+    }
+}
